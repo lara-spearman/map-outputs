@@ -2,71 +2,6 @@ from dash import Dash, html, dcc, callback, Output, Input, dash_table
 import plotly.express as px
 import pandas as pd
 
-layer_info = {
-    # "Sustrans National Cycle Network Route":{"group":"Map5",
-    #                                         "group_field":"None"},
-    # "Sustrans_Regional Cycle Route":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "Sustrans Reclassified Cycle Route":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "Public Rights of Way":{"group":"Map5",
-    #                  "group_field":"LYR_NAME"},
-    # "FC Forest Roads":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "CRoW S16 Dedicated Land":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "CRoW_S15 Land All Types":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "Conclusive Registered Commons":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "Conclusive Open Country":{"group":"Map5",
-    #                  "group_field":"None"},
-    #  "CRoW Access Land":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "OS Greenspace":{"group":"Map5",
-    #                  "group_field":"function"},
-    # "NE Country Parks":{"group":"Map5",
-    #                  "group_field":"None"},
-    # "Agricultural Land Classification":{"group":"Map6",
-    #                  "group_field":":ALC_GRADE"},
-    # "Environmental Stewardship Scheme":{"group":"Map7",
-    #                  "group_field":"SCHEME"},
-    "Organic Farming Scheme":{"group":"Map7",
-                     "group_field":"SCHEME"},
-    # "Countryside Stewardship Scheme":{"group":"Map7",
-    #                  "group_field":"CS_TYPE"},
-    "RPA Landcovers":{"group":"Map8",
-                     "group_field":"COVER_TYPE"},
-    # "RPA Land Parcels":{"group":"Map9",
-    #                  "group_field":"FarmID"},
-    # "WSBRC Wiltshire eNGO Sites":{"group":"Map10",
-    #                  "group_field":""},
-    # "WSBRC Wiltshire eNGO Sites":{"group":"Map10",
-    #                  "group_field":""},
-    
-}
-
-# location_data = "O:/LocalAuthorities/Neighbourhood_Plans/Research/NeigbourhoodPlansPython"
-# df_all = pd.DataFrame({'NAME': [], 'sum_Area_HECTARES': [],'groupColumnValue': [],'groupColumnName': [],'mapGroup': [],'mapName': []})
-# # def create_dataframe():
-    
-# for layer in layer_info.keys():
-#     layer_name = layer.replace(" ","_")
-#     df_table = pd.read_csv(f"{location_data}/{layer_info[layer]['group']}_{layer_name}_table.csv")
-#     df_layer = pd.read_csv(f"{location_data}/{layer_info[layer]['group']}_{layer_name}.csv")
-#     df_table.rename(columns = {f"{layer_info[layer]['group_field']}":"groupColumnValue"}, inplace=True)
-#     #df_table.rename(columns = {"sum_Area_HECTARES":"groupColumnValue"}, inplace=True)
-#     df_layer_all = df_layer[["NAME", "Join_ID"]].merge(df_table, on="Join_ID")
-#     df_layer_all = df_layer_all[['NAME', 'sum_Area_HECTARES',  
-#     "groupColumnValue"]]
-#     df_layer_all["mapGroup"] = f"{layer_info[layer]['group']}"
-#     df_layer_all["mapName"] = f"{layer_name}"
-#     df_layer_all["groupColumnName"] = layer_info[layer]['group_field']
-#     #df_all = df_all.append(df_layer_all)
-#     df_all = pd.concat([df_all,df_layer_all ])
-#     # return df_all
-# # df_all = create_dataframe()
-# print(df_all)
 
 df_all = pd.read_csv('test.csv')
 
@@ -87,7 +22,7 @@ app.layout = html.Div([
                 [
                     html.H1(children='Analysis Parish Council', style={'textAlign':'center'}),
                     dcc.Dropdown(df_all.NAME.unique(), 'Colerne', id='dropdown-selection-pc'),
-                    dcc.Dropdown(df_all.mapName.unique(), 'RPA_Landcovers', id='dropdown-selection-map-pc'),
+                    dcc.Dropdown(df_all.mapGroup.unique(), 'Map5', id='dropdown-selection-map-pc'),
                     dcc.Graph(id='graph-content-pc'),
                     dash_table.DataTable(id = "table-content-pc",sort_action='native'),
                 ])
@@ -138,7 +73,7 @@ def update_graph(value1, value2):
 def update_graph(value1, value2):
 
     df_filter = df_all[df_all.NAME==value1]
-    dff = df_filter[df_filter.mapName==value2]
+    dff = df_filter[df_filter.mapGroup==value2]
     x_axis_name = dff.unitName.unique()[0]
     dff_sorted = dff.sort_values(by = "value", ascending= False)
     dff_sorted['value'] = dff_sorted['value'].round(1)
