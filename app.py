@@ -54,7 +54,10 @@ def update_graph(value1, value2, value3):
 
     df_filter = df_all[df_all.mapName==value1]
     dff = df_filter[df_filter.groupColumnValue==value2]
-    x_axis_name = dff.unitName.unique()[0]
+    try:
+        x_axis_name = dff.unitName.unique()[0]
+    except:
+        x_axis_name = ""
     #dff['value']=dff['value'].map("{:,.0f}".format)
     dff_sorted = dff.sort_values(by = "value", ascending= False)
     dff_sorted['value'] = dff_sorted['value'].round(1)
