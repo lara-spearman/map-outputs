@@ -88,7 +88,11 @@ def update_graph(value1, value2):
 
     df_filter = df_all[df_all.NAME==value1]
     dff = df_filter[df_filter.mapGroup==value2]
-    x_axis_name = dff.unitName.unique()[0]
+    try:
+        x_axis_name = dff.unitName.unique()[0]
+    except:
+        x_axis_name = ""
+    # x_axis_name = dff.unitName.unique()[0]
     dff_sorted = dff.sort_values(by = "value", ascending= False)
     dff_sorted['value'] = dff_sorted['value'].round(1)
     fig = px.bar(dff_sorted, x='groupColumnValue', y='value', template = "simple_white", labels = {"value":x_axis_name, "groupColumnValue":"Type"})
