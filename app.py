@@ -1,6 +1,8 @@
 from dash import Dash, html, dcc, callback, Output, Input, dash_table
 import plotly.express as px
+import plotly.graph_objects as go
 import pandas as pd
+import numpy as np
 
 
 df_all = pd.read_csv('test.csv')
@@ -15,6 +17,7 @@ app.layout = html.Div([
                     html.H1(children='Analysis', style={'textAlign':'center'}),
                     dcc.Dropdown(df_all.mapName.unique(), 'RPA_Landcovers', id='dropdown-selection-dataset'),
                     dcc.Dropdown(value = 'Arable land', id='dropdown-selection-variable'),
+                     dcc.Dropdown(df_all.NAME.unique(), value = 'Colerne', id='dropdown-selection-pc-comparison'),
                     dcc.Graph(id='graph-content'),
                     dash_table.DataTable(id = "table-content",sort_action='native'),
                 ]),
@@ -42,20 +45,31 @@ def set_column_options(selected_dataset):
 
 @callback(
     Output('graph-content', 'figure'),
-    Output('table-content', 'data'),
+    Output('table-content', 'data'),    
     Input('dropdown-selection-dataset', 'value'),
-    Input('dropdown-selection-variable', 'value')
+    Input('dropdown-selection-variable', 'value'),
+    Input('dropdown-selection-pc-comparison', 'value'),
 )
-def update_graph(value1, value2):
+def update_graph(value1, value2, value3):
 
     df_filter = df_all[df_all.mapName==value1]
     dff = df_filter[df_filter.groupColumnValue==value2]
-    x_axis_name = dff.unitName.unique()[0]
+    try:
+        x_axis_name = dff.unitName.unique()[0]
+    except:
+        x_axis_name = ""
     #dff['value']=dff['value'].map("{:,.0f}".format)
     dff_sorted = dff.sort_values(by = "value", ascending= False)
     dff_sorted['value'] = dff_sorted['value'].round(1)
-    fig = px.bar(dff_sorted, x='NAME', y='value', template = "simple_white", labels = {"value":x_axis_name})
-    
+    dff_sorted['color'] = np.where(dff_sorted.NAME == value3,  '#e377c2', '#1f77b4')
+    #fig = px.bar(dff_sorted, x='NAME', template = "simple_white", labels = {"value":x_axis_name})
+    fig = go.Figure(data=[go.Bar(
+    x=dff_sorted.NAME,
+    y=dff_sorted.value,
+
+    marker_color=dff_sorted['color'] 
+    )])
+    fig.update_layout(template= "simple_white")
 
     table_data_filtered = dff_sorted[['NAME', 'value','groupColumnValue', "unitName"]]
     #table_data_filtered['values'] = table_data_filtered['values'].round()
@@ -74,7 +88,11 @@ def update_graph(value1, value2):
 
     df_filter = df_all[df_all.NAME==value1]
     dff = df_filter[df_filter.mapGroup==value2]
-    x_axis_name = dff.unitName.unique()[0]
+    try:
+        x_axis_name = dff.unitName.unique()[0]
+    except:
+        x_axis_name = ""
+    # x_axis_name = dff.unitName.unique()[0]
     dff_sorted = dff.sort_values(by = "value", ascending= False)
     dff_sorted['value'] = dff_sorted['value'].round(1)
     fig = px.bar(dff_sorted, x='groupColumnValue', y='value', template = "simple_white", labels = {"value":x_axis_name, "groupColumnValue":"Type"})
