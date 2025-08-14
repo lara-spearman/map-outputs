@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <style>
+
+    body {
+         font-family:'Trebuchet MS', sans-serif;;
+         margin-left: 15%;
+         margin-right: 20%;
+         margin-top: 20px;
+         margin-bottom: 20px;
+    }
+    h1 {
+        text-align: center;
+        /* font-family: Helvetica, Arial, sans-serif; */
+    }
+    /* h3 {
+        font-family: Helvetica, Arial, sans-serif;
+    } */
+
+    /* table { 
+        margin-left: auto;
+        margin-right: auto;
+    } */
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 5px;
+        text-align: center;
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 90%;
+    }
+    table tbody tr:hover {
+        background-color: #dddddd;
+    }
+    .wide {
+        width: 90%; 
+    }
+    .row {
+  display: flex;
+    }
+
+    .column {
+    flex: 50%;
+    }
+    a.button {
+    padding: 5px 10px;
+    border: 1px outset buttonborder;
+    border-radius: 5px;
+    border-color: white;
+    color: white;
+    background-color: green;
+    text-decoration: none;
+    margin-inline: 10px;
+     box-shadow: 2px 2px grey;
+}
+ .button-container {
+  display: flex;
+ 
+}
+.info-box {
+    padding: 5px 10px;
+    border: 1px outset buttonborder;
+    border-radius: 7px;
+    border-color: black;
+    color: black;
+    /* background-color: green; */
+    text-decoration: none;
+    margin-inline: 10px;
+    border-width: thin;
+    box-shadow: 3px 3px grey
+}
+ .info-box-container {
+  display: flex;
+ 
+}
+.small-text-info-box {
+  font-size: 10px;
+  font-weight: bold;
+  color: darkgreen
+}
+.large-text-info-box {
+  font-size: 20px;
+  font-weight: bold;
+  color: darkgreen
+}
+    @media screen and (min-width: 800px) {
+    .info-box-container {
+        flex:1
+    }
+    }
+
+</style>
+  <title>Results</title>
+</head>
+
+<body>
+    <img src="https://www.wsbrc.org/wp-content/uploads/2023/12/WSBRC-dot-Org-logo-Small-landscape-with-strap-CMYK-revised-Aug23.png" alt="WSBRC Logo" width="518" height="152">
+
+  <h1>{{ pc }} Results</h1>
+
+
+ 
+
+
+  <h3>{{ pc }} has an area of {{ pcAreaHa }} ha which is the {{ pcAreaRank }} largest parish council in the county. </h3>
+
+
+  <h2 class = "summary", id = "summary">Highlights</h2>
+  <h3>Categories where {{ pc }} has a larger area of land than other Parish Councils </h3>
+  {% if scores.shape[0]>0 %}
+ <div class = "info-box-container">
+  {% for score in scores['groupColumnValue'].unique() %}
+
+    <!-- There is {{ scores[scores['groupColumnValue']==score]['value'].item()}} ha of {{score}}, which is {{ scores[scores['groupColumnValue']==score]['rank'].item()}} in the county in terms of area.  -->
+   <div class = "info-box">
+    <div class = "large-text-info-box">{{ scores[scores['groupColumnValue']==score]['value'].item()}} ha</div>
+    <div class = "small-text-info-box">{{ score}} </div>
+  </div>
+    
+    <!-- <br> -->
+ 
+    {% endfor %}
+    </div>
+<br>
+<h2>Categories</h2>
+<div class = "button-container">
+     {% for category in data.keys()  %}
+     
+  <a href = "#{{category.replace(" ", "_")}}" class = "button">{{category}}</a>
+  <!-- <br> -->
+ {% endfor %}
+ </div>
+  {% for category in data.keys() %}
+    
+   <h2 class = "category", id = {{category.replace(" ", "_")}}>{{category}}</h2>
+    {% for dataset in data[category].keys() %}
+    <h3>{{ dataset }}</h3>
+    <div class="row">
+    <div class="column">{{ data[category][dataset]['table'] }}</div>
+    <div class="column">{{ data[category][dataset]['fig'] }}</div>
+    </div>
+    
+    
+    {% endfor %}
+    {% endfor %}
+  {% endif %}
+{{ fig }}
+</body>
+</html>
