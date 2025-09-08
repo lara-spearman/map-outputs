@@ -11,18 +11,17 @@
          margin-top: 20px;
          margin-bottom: 20px;
     }
+
     h1 {
         text-align: center;
-        /* font-family: Helvetica, Arial, sans-serif; */
     }
-    /* h3 {
-        font-family: Helvetica, Arial, sans-serif;
-    } */
+    .small-text {
+      font-size: 18px;
+    }
 
-    /* table { 
-        margin-left: auto;
-        margin-right: auto;
-    } */
+    table {
+      width: 100%;
+    }
     table, th, td {
         border: 1px solid black;
         border-collapse: collapse;
@@ -32,6 +31,7 @@
         text-align: center;
         font-family: Helvetica, Arial, sans-serif;
         font-size: 90%;
+        text-align: left;
     }
     table tbody tr:hover {
         background-color: #dddddd;
@@ -104,18 +104,20 @@
 
 
  
+  <div class = "small-text">This document summarises over 30 datasets to help {{pc}} in the Neighbourhood planning process.  </div>
 
+ 
 
-  <h3>{{ pc }} has an area of {{ pcAreaHa }} ha which is the {{ pcAreaRank }} largest parish council in the county. </h3>
-
-
-  <h2 class = "summary", id = "summary">Highlights</h2>
-  <h3>Categories where {{ pc }} has a larger area of land than other Parish Councils </h3>
+  <h2 class = "summary", id = "summary">Overview</h2>
+   <div class = "small-text">{{ pc }} has an area of {{ pcAreaHa }} ha which is the {{ pcAreaRank }} largest parish council in the county. </div>
+<br>
+  <div class = "small-text">Categories where {{ pc }} has a larger area of land than other Parish Councils: </div>
+  <br>
   {% if scores.shape[0]>0 %}
  <div class = "info-box-container">
   {% for score in scores['groupColumnValue'].unique() %}
 
-    There is {{ scores[scores['groupColumnValue']==score]['value'].item()}} ha of {{score}}, which is {{ scores[scores['groupColumnValue']==score]['rank'].item()}} in the county in terms of area. 
+    <!-- There is {{ scores[scores['groupColumnValue']==score]['value'].item()}} ha of {{score}}, which is {{ scores[scores['groupColumnValue']==score]['rank'].item()}} in the county in terms of area.  -->
    <div class = "info-box">
     <div class = "large-text-info-box">{{ scores[scores['groupColumnValue']==score]['value'].item()}} ha</div>
     <div class = "small-text-info-box">{{ score}} </div>
@@ -127,20 +129,22 @@
     </div>
 <br>
 <h2>Categories</h2>
-<div class = "button-container">
+<!-- <div class = "button-container"> -->
      {% for category in data.keys()  %}
-     
-  <a href = "#{{category.replace(" ", "_")}}" class = "button">{{category}}</a>
+     <a href = "#{{category.replace(" ", "_")}}" >{{category}}</a>
+     <br>
+  <!-- <a href = "#{{category.replace(" ", "_")}}" class = "button">{{category}}</a> -->
 
  {% endfor %}
- </div>
+ <!-- </div> -->
   {% for category in data.keys() %}
-    
    <h2 class = "category", id = {{category.replace(" ", "_")}}>{{category}}</h2>
     {% for dataset in data[category].keys() %}
     <h3>{{ dataset }}</h3>
+     <div class = "dataset-text">{{ data[category][dataset]['text'] }} </div>
     <div class="row">
-    <div class="column">{{ data[category][dataset]['table'] }}</div>
+   
+    <div class="column", style = "width: 100%">{{ data[category][dataset]['table'] }}</div>
     <div class="column">{{ data[category][dataset]['fig'] }}</div>
     </div>
     
