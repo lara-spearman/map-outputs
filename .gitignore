@@ -2,4 +2,4 @@
 *.xml
 /outputReports
 *.xlsx
-
+*.json
